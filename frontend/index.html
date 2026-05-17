@@ -1,0 +1,1732 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>EcoAcopio ERP</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg0: #0a0d0f;
+  --bg1: #111518;
+  --bg2: #181d21;
+  --bg3: #1f262c;
+  --bg4: #252e36;
+  --bg5: #2e3a44;
+  --border: #2a3540;
+  --border2: #3a4a58;
+  --text1: #e8edf2;
+  --text2: #9eb0c0;
+  --text3: #5e7585;
+  --green: #22c97a;
+  --green-dim: #1a9a5e;
+  --green-bg: #0d2b1f;
+  --green-border: #1a4a30;
+  --amber: #f5a623;
+  --amber-dim: #c07d0f;
+  --amber-bg: #2b1e08;
+  --amber-border: #4a3410;
+  --red: #f04e4e;
+  --red-dim: #c03030;
+  --red-bg: #2b0f0f;
+  --red-border: #4a1a1a;
+  --blue: #4e9ef4;
+  --blue-dim: #2a6ec0;
+  --blue-bg: #0d1e2e;
+  --blue-border: #1a3a58;
+  --teal: #2ec4c4;
+  --teal-bg: #0a2020;
+  --teal-border: #1a3a3a;
+  --accent: #22c97a;
+  --font: 'Space Grotesk', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --r: 10px;
+  --r-sm: 6px;
+  --r-lg: 16px;
+  --shadow: 0 4px 24px rgba(0,0,0,.5);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,.4);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; font-family: var(--font); background: var(--bg0); color: var(--text1); font-size: 15px; overflow: hidden; }
+body { display: flex; flex-direction: column; }
+
+/* ===== TOPBAR ===== */
+.topbar {
+  background: var(--bg1);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  height: 58px;
+  flex-shrink: 0;
+  gap: 16px;
+}
+.logo { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.logo-icon {
+  width: 34px; height: 34px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--green-bg) 0%, #0f3d27 100%);
+  border: 1px solid var(--green-border);
+  display: flex; align-items: center; justify-content: center; font-size: 17px;
+}
+.logo-text { font-size: 16px; font-weight: 700; letter-spacing: -.3px; color: var(--text1); }
+.logo-sub { font-size: 10px; color: var(--text3); font-weight: 400; display: block; margin-top: -2px; }
+.topbar-divider { width: 1px; height: 30px; background: var(--border); }
+.user-badge {
+  display: flex; align-items: center; gap: 8px; margin-left: auto;
+  background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r-sm);
+  padding: 6px 12px; cursor: pointer;
+}
+.user-role-pill {
+  font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 20px; letter-spacing: .5px; text-transform: uppercase;
+}
+.role-admin { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-border); }
+.role-operario { background: var(--blue-bg); color: var(--blue); border: 1px solid var(--blue-border); }
+.topbar-time { font-family: var(--mono); font-size: 12px; color: var(--text3); }
+.notif-btn {
+  position: relative; width: 34px; height: 34px; border-radius: var(--r-sm);
+  background: var(--bg2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 16px; transition: background .15s;
+}
+.notif-dot {
+  position: absolute; top: 5px; right: 5px; width: 7px; height: 7px; border-radius: 50%;
+  background: var(--red); border: 1.5px solid var(--bg1);
+}
+
+/* ===== LAYOUT ===== */
+.layout { display: flex; flex: 1; overflow: hidden; }
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  width: 220px; flex-shrink: 0;
+  background: var(--bg1); border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; overflow: hidden;
+  transition: width .25s ease;
+}
+.sidebar-section { padding: 14px 12px 6px; }
+.sidebar-label { font-size: 10px; font-weight: 600; color: var(--text3); letter-spacing: 1px; text-transform: uppercase; padding: 0 4px; margin-bottom: 4px; }
+.nav-item {
+  display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: var(--r-sm);
+  cursor: pointer; transition: background .12s; color: var(--text2); font-size: 14px; font-weight: 400;
+  margin-bottom: 2px; position: relative; user-select: none;
+}
+.nav-item:hover { background: var(--bg3); color: var(--text1); }
+.nav-item.active { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+.nav-item.active .nav-icon { color: var(--green); }
+.nav-icon { font-size: 18px; flex-shrink: 0; width: 22px; text-align: center; }
+.nav-badge {
+  margin-left: auto; font-size: 10px; font-weight: 600; padding: 1px 6px;
+  border-radius: 20px; background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border);
+}
+.sidebar-footer {
+  margin-top: auto; padding: 12px; border-top: 1px solid var(--border);
+}
+.sidebar-stat {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r);
+  padding: 10px 12px;
+}
+.sidebar-stat-label { font-size: 10px; color: var(--text3); font-weight: 500; }
+.sidebar-stat-value { font-family: var(--mono); font-size: 20px; font-weight: 500; color: var(--green); margin-top: 2px; }
+.sidebar-stat-sub { font-size: 11px; color: var(--text3); margin-top: 1px; }
+
+/* ===== MAIN CONTENT ===== */
+.main { flex: 1; overflow-y: auto; overflow-x: hidden; background: var(--bg0); }
+.page { display: none; padding: 24px; min-height: 100%; }
+.page.active { display: block; }
+.page-header { margin-bottom: 22px; }
+.page-title { font-size: 22px; font-weight: 700; letter-spacing: -.4px; }
+.page-sub { font-size: 13px; color: var(--text3); margin-top: 3px; }
+
+/* ===== CARDS ===== */
+.card {
+  background: var(--bg1); border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: 20px;
+}
+.card-title { font-size: 13px; font-weight: 600; color: var(--text2); margin-bottom: 14px; letter-spacing: .2px; }
+
+/* ===== GRID ===== */
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.grid-12 { display: grid; grid-template-columns: 1fr 2fr; gap: 16px; }
+.grid-21 { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
+
+/* ===== STAT CARDS ===== */
+.stat-card {
+  background: var(--bg1); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 16px 18px;
+}
+.stat-label { font-size: 11px; color: var(--text3); font-weight: 500; margin-bottom: 4px; }
+.stat-value { font-size: 26px; font-weight: 700; font-family: var(--mono); }
+.stat-trend { font-size: 11px; margin-top: 3px; }
+.stat-up { color: var(--green); }
+.stat-down { color: var(--red); }
+.stat-neutral { color: var(--text3); }
+.stat-icon { font-size: 22px; margin-bottom: 6px; }
+
+/* ===== FORM ELEMENTS ===== */
+.form-group { margin-bottom: 14px; }
+.form-label { font-size: 12px; font-weight: 600; color: var(--text2); margin-bottom: 6px; display: block; letter-spacing: .2px; }
+.form-label .req { color: var(--red); margin-left: 2px; }
+.form-input, .form-select, .form-textarea {
+  width: 100%; background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: var(--r-sm); color: var(--text1); font-family: var(--font);
+  font-size: 14px; padding: 10px 12px; outline: none; transition: border-color .15s, box-shadow .15s;
+  appearance: none;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  border-color: var(--green); box-shadow: 0 0 0 3px rgba(34,201,122,.12);
+}
+.form-input.error, .form-select.error { border-color: var(--red); box-shadow: 0 0 0 3px rgba(240,78,78,.12); }
+.form-select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5' stroke='%235e7585' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px; padding-right: 36px; cursor: pointer; }
+.form-select option { background: var(--bg2); }
+.form-textarea { resize: vertical; min-height: 80px; }
+.form-hint { font-size: 11px; color: var(--text3); margin-top: 5px; }
+.form-error { font-size: 11px; color: var(--red); margin-top: 5px; display: none; }
+.form-error.show { display: block; }
+.field-readonly {
+  background: var(--bg0); border: 1px solid var(--border); border-radius: var(--r-sm);
+  padding: 10px 12px; font-size: 14px; color: var(--text3); font-family: var(--mono);
+}
+
+/* ===== BUTTONS ===== */
+.btn {
+  display: inline-flex; align-items: center; gap: 7px; padding: 9px 16px;
+  border-radius: var(--r-sm); font-family: var(--font); font-size: 13px; font-weight: 600;
+  border: none; cursor: pointer; transition: all .15s; letter-spacing: .2px;
+}
+.btn-primary { background: var(--green); color: #041a0d; }
+.btn-primary:hover { background: #28e88c; }
+.btn-primary:active { background: var(--green-dim); }
+.btn-secondary { background: var(--bg3); color: var(--text1); border: 1px solid var(--border2); }
+.btn-secondary:hover { background: var(--bg4); }
+.btn-danger { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
+.btn-danger:hover { background: var(--red-dim); color: #fff; }
+.btn-amber { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-border); }
+.btn-amber:hover { background: var(--amber-dim); color: #fff; }
+.btn-ghost { background: transparent; color: var(--text2); border: 1px solid var(--border); }
+.btn-ghost:hover { background: var(--bg2); color: var(--text1); }
+.btn-sm { padding: 5px 10px; font-size: 12px; }
+.btn-lg { padding: 12px 22px; font-size: 15px; }
+.btn-full { width: 100%; justify-content: center; }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+
+/* ===== TABLE ===== */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+thead th {
+  font-size: 11px; font-weight: 600; color: var(--text3); letter-spacing: .8px; text-transform: uppercase;
+  padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border);
+  background: var(--bg2); white-space: nowrap;
+}
+tbody tr { border-bottom: 1px solid var(--border); transition: background .1s; }
+tbody tr:hover { background: var(--bg2); }
+tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-align: middle; }
+tbody td .main-cell { color: var(--text1); font-weight: 500; }
+.table-actions { display: flex; gap: 6px; }
+
+/* ===== BADGES ===== */
+.badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 20px; letter-spacing: .3px;
+}
+.badge-green { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+.badge-red { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
+.badge-amber { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-border); }
+.badge-blue { background: var(--blue-bg); color: var(--blue); border: 1px solid var(--blue-border); }
+.badge-teal { background: var(--teal-bg); color: var(--teal); border: 1px solid var(--teal-border); }
+.badge-gray { background: var(--bg3); color: var(--text2); border: 1px solid var(--border); }
+
+/* ===== ALERTS ===== */
+.alert {
+  padding: 12px 16px; border-radius: var(--r); font-size: 13px; margin-bottom: 14px;
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.alert-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.alert-warning { background: var(--amber-bg); border: 1px solid var(--amber-border); color: var(--amber); }
+.alert-error { background: var(--red-bg); border: 1px solid var(--red-border); color: var(--red); }
+.alert-success { background: var(--green-bg); border: 1px solid var(--green-border); color: var(--green); }
+.alert-info { background: var(--blue-bg); border: 1px solid var(--blue-border); color: var(--blue); }
+
+/* ===== MODAL ===== */
+.modal-overlay {
+  display: none; position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 1000;
+  align-items: center; justify-content: center; backdrop-filter: blur(4px);
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--bg1); border: 1px solid var(--border2);
+  border-radius: var(--r-lg); padding: 24px; width: 480px; max-width: 92vw;
+  box-shadow: var(--shadow); animation: modalIn .18s ease-out;
+}
+@keyframes modalIn { from { opacity: 0; transform: scale(.96) translateY(-8px); } to { opacity: 1; transform: none; } }
+.modal-title { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+.modal-sub { font-size: 13px; color: var(--text3); margin-bottom: 20px; }
+.modal-actions { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; }
+.modal-warn { background: var(--amber-bg); border: 1px solid var(--amber-border); border-radius: var(--r); padding: 12px; margin-bottom: 16px; }
+.modal-warn-text { font-size: 13px; color: var(--amber); }
+.modal-warn-icon { font-size: 20px; }
+
+/* ===== PROGRESS / STOCK ===== */
+.progress-bar { height: 6px; background: var(--bg4); border-radius: 20px; overflow: hidden; margin-top: 6px; }
+.progress-fill { height: 100%; border-radius: 20px; transition: width .4s ease; }
+.fill-green { background: var(--green); }
+.fill-amber { background: var(--amber); }
+.fill-red { background: var(--red); }
+
+/* ===== INVENTORY ITEM ===== */
+.inv-item {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 14px 16px; display: flex; align-items: center; gap: 12px;
+  transition: border-color .15s;
+}
+.inv-item:hover { border-color: var(--border2); }
+.inv-icon { font-size: 24px; flex-shrink: 0; }
+.inv-info { flex: 1; min-width: 0; }
+.inv-name { font-size: 14px; font-weight: 600; color: var(--text1); }
+.inv-meta { font-size: 12px; color: var(--text3); margin-top: 2px; }
+.inv-kg { font-family: var(--mono); font-size: 18px; font-weight: 700; color: var(--green); flex-shrink: 0; }
+
+/* ===== AI SCANNER ===== */
+.scanner-area {
+  border: 2px dashed var(--border2); border-radius: var(--r-lg);
+  min-height: 200px; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 12px; cursor: pointer; transition: border-color .2s, background .2s;
+  background: var(--bg2); padding: 24px; text-align: center;
+}
+.scanner-area:hover { border-color: var(--green); background: var(--green-bg); }
+.scanner-icon { font-size: 40px; }
+.scanner-text { font-size: 14px; color: var(--text3); }
+.scanner-result {
+  border: 1px solid var(--border); border-radius: var(--r-lg);
+  background: var(--bg2); padding: 16px; display: none;
+}
+.scanner-result.show { display: block; }
+.ai-label { font-size: 11px; font-weight: 600; color: var(--teal); letter-spacing: .5px; }
+
+/* ===== TABS ===== */
+.tabs { display: flex; gap: 4px; background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 4px; margin-bottom: 18px; }
+.tab-btn {
+  flex: 1; padding: 8px; font-family: var(--font); font-size: 13px; font-weight: 600;
+  background: none; border: none; border-radius: var(--r-sm); color: var(--text3);
+  cursor: pointer; transition: all .15s; text-align: center;
+}
+.tab-btn.active { background: var(--bg4); color: var(--text1); }
+
+/* ===== CHART BAR ===== */
+.chart-container { display: flex; align-items: flex-end; gap: 8px; height: 100px; padding: 4px 0; }
+.chart-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; }
+.chart-bar { width: 100%; border-radius: 4px 4px 0 0; transition: height .4s ease; }
+.chart-bar-label { font-size: 10px; color: var(--text3); text-align: center; white-space: nowrap; }
+.chart-bar-val { font-size: 10px; color: var(--text2); font-family: var(--mono); }
+
+/* ===== TOAST ===== */
+.toast-container { position: fixed; top: 70px; right: 16px; z-index: 2000; display: flex; flex-direction: column; gap: 8px; }
+.toast {
+  background: var(--bg2); border: 1px solid var(--border2); border-radius: var(--r);
+  padding: 12px 16px; font-size: 13px; display: flex; align-items: center; gap: 10px;
+  box-shadow: var(--shadow); min-width: 280px; animation: toastIn .2s ease-out;
+  max-width: 340px;
+}
+@keyframes toastIn { from { opacity:0; transform:translateX(20px) } to { opacity:1; transform:none } }
+.toast-success { border-left: 3px solid var(--green); }
+.toast-error { border-left: 3px solid var(--red); }
+.toast-warning { border-left: 3px solid var(--amber); }
+.toast-info { border-left: 3px solid var(--blue); }
+
+/* ===== SEARCH ===== */
+.search-wrap { position: relative; }
+.search-wrap .search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 15px; color: var(--text3); }
+.search-wrap input { padding-left: 34px; }
+
+/* ===== MISC ===== */
+.sep { height: 1px; background: var(--border); margin: 16px 0; }
+.flex-row { display: flex; align-items: center; gap: 12px; }
+.flex-between { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.mt-4 { margin-top: 4px; } .mt-8 { margin-top: 8px; } .mt-12 { margin-top: 12px; } .mt-16 { margin-top: 16px; } .mt-20 { margin-top: 20px; }
+.mb-4 { margin-bottom: 4px; } .mb-8 { margin-bottom: 8px; } .mb-12 { margin-bottom: 12px; } .mb-16 { margin-bottom: 16px; }
+.text-green { color: var(--green); } .text-red { color: var(--red); } .text-amber { color: var(--amber); } .text-blue { color: var(--blue); } .text-muted { color: var(--text3); }
+.mono { font-family: var(--mono); }
+.fw-700 { font-weight: 700; }
+.hidden { display: none !important; }
+
+/* ===== LOCKED OVERLAY ===== */
+.locked-overlay {
+  position: absolute; inset: 0; background: rgba(10,13,15,.85);
+  border-radius: var(--r-lg); display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 10px; backdrop-filter: blur(2px); z-index: 10;
+}
+.locked-text { font-size: 14px; color: var(--text2); text-align: center; max-width: 220px; line-height: 1.5; }
+.card-relative { position: relative; }
+
+/* ===== AUDIT LOG ===== */
+.audit-item {
+  display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border);
+}
+.audit-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+.audit-content { flex: 1; }
+.audit-title { font-size: 13px; color: var(--text1); }
+.audit-meta { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--bg1); }
+::-webkit-scrollbar-thumb { background: var(--bg5); border-radius: 4px; }
+
+/* ===== LOGIN ===== */
+#login-screen {
+  position: fixed; inset: 0; background: var(--bg0);
+  display: flex; align-items: center; justify-content: center; z-index: 9999;
+}
+.login-card { width: 380px; }
+.login-logo { text-align: center; margin-bottom: 28px; }
+.login-logo .logo-icon { width: 54px; height: 54px; font-size: 26px; margin: 0 auto 12px; }
+.login-logo h1 { font-size: 24px; font-weight: 700; }
+.login-logo p { font-size: 13px; color: var(--text3); margin-top: 4px; }
+.login-demo-btns { display: flex; gap: 8px; margin-top: 16px; }
+
+</style>
+</head>
+<body>
+
+<!-- ===== TOAST CONTAINER ===== -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- ===== LOGIN SCREEN ===== -->
+<div id="login-screen">
+  <div class="login-card card">
+    <div class="login-logo">
+      <div class="logo-icon" style="display:flex;align-items:center;justify-content:center;">♻️</div>
+      <h1>EcoAcopio</h1>
+      <p>Sistema de Gestión para Centros de Acopio</p>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Usuario</label>
+      <input type="text" class="form-input" id="login-user" placeholder="usuario@empresa.com">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Contraseña</label>
+      <input type="password" class="form-input" id="login-pass" placeholder="••••••••">
+    </div>
+    <div class="login-demo-btns">
+      <button class="btn btn-primary btn-full" onclick="doLogin()">
+        🔓 Ingresar
+      </button>
+    </div>
+    <p class="text-muted mt-12" style="font-size:11px;text-align:center;">Demo de presentación — ODS 8, 9, 12</p>
+  </div>
+</div>
+
+<!-- ===== MODAL OVERLAY ===== -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal" id="modal-content"></div>
+</div>
+
+<!-- ===== TOPBAR ===== -->
+<div class="topbar" id="main-topbar" style="display:none;">
+  <div class="logo">
+    <div class="logo-icon">♻️</div>
+    <div>
+      <span class="logo-text">EcoAcopio</span>
+      <span class="logo-sub">Centro de Acopio Digital</span>
+    </div>
+  </div>
+  <div class="topbar-divider"></div>
+  <span class="topbar-time mono" id="top-clock">--:--:--</span>
+  <div style="margin-left:auto;display:flex;align-items:center;gap:10px;">
+    <div class="notif-btn">🔔<div class="notif-dot"></div></div>
+    <div class="user-badge" id="user-badge-display">
+      <span id="user-name-disp">—</span>
+      <span class="user-role-pill" id="user-role-disp">—</span>
+    </div>
+    <button class="btn btn-ghost btn-sm" onclick="logout()">Salir</button>
+  </div>
+</div>
+
+<!-- ===== MAIN LAYOUT ===== -->
+<div class="layout" id="main-layout" style="display:none;">
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Principal</div>
+      <div class="nav-item active" onclick="nav('dashboard')">
+        <span class="nav-icon">📊</span> Dashboard
+      </div>
+      <div class="nav-item" onclick="nav('pesaje')">
+        <span class="nav-icon">⚖️</span> Registro de Pesaje
+      </div>
+      <div class="nav-item" onclick="nav('inventario')">
+        <span class="nav-icon">📦</span> Inventario
+      </div>
+      <div class="nav-item" onclick="nav('scanner')">
+        <span class="nav-icon">🤖</span> Escáner IA
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Gestión</div>
+      <div class="nav-item" onclick="nav('proveedores')">
+        <span class="nav-icon">👥</span> Proveedores
+      </div>
+      <div class="nav-item admin-only" onclick="nav('reportes')">
+        <span class="nav-icon">📋</span> Reportes
+      </div>
+      <div class="nav-item admin-only" onclick="nav('materiales')">
+        <span class="nav-icon">🏷️</span> Lista Maestra
+      </div>
+      <div class="nav-item admin-only" onclick="nav('auditoria')">
+        <span class="nav-icon">🔍</span> Auditoría
+        <span class="nav-badge" id="audit-badge">3</span>
+      </div>
+    </div>
+    <div class="sidebar-footer">
+      <div class="sidebar-stat">
+        <div class="sidebar-stat-label">STOCK TOTAL HOY</div>
+        <div class="sidebar-stat-value" id="sidebar-stock">0 kg</div>
+        <div class="sidebar-stat-sub" id="sidebar-txns">0 transacciones</div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- PAGES -->
+  <main class="main">
+
+    <!-- ===== DASHBOARD ===== -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-header">
+        <h1 class="page-title">Dashboard Operativo</h1>
+        <p class="page-sub" id="dash-date">—</p>
+      </div>
+      <div class="grid-4 mb-16">
+        <div class="stat-card">
+          <div class="stat-icon">⚖️</div>
+          <div class="stat-label">PESAJES HOY</div>
+          <div class="stat-value text-green" id="stat-pesajes">0</div>
+          <div class="stat-trend stat-up" id="stat-pesajes-trend"></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📦</div>
+          <div class="stat-label">KG INGRESADOS HOY</div>
+          <div class="stat-value text-blue" id="stat-kg">0</div>
+          <div class="stat-trend stat-neutral">kg acumulados</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">👥</div>
+          <div class="stat-label">PROVEEDORES ACTIVOS</div>
+          <div class="stat-value text-amber" id="stat-provs">0</div>
+          <div class="stat-trend stat-neutral">registrados</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🏷️</div>
+          <div class="stat-label">MATERIALES EN STOCK</div>
+          <div class="stat-value" id="stat-mats">0</div>
+          <div class="stat-trend stat-neutral">categorías activas</div>
+        </div>
+      </div>
+
+      <div class="grid-21 mb-16">
+        <!-- Últimos pesajes -->
+        <div class="card">
+          <div class="flex-between mb-16">
+            <span class="card-title" style="margin-bottom:0">Últimos Registros</span>
+            <button class="btn btn-ghost btn-sm" onclick="nav('pesaje')">+ Nuevo</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr>
+                <th>Material</th><th>Proveedor</th><th>Peso</th><th>Hora</th><th>Estado</th>
+              </tr></thead>
+              <tbody id="dash-table">
+                <tr><td colspan="5" style="text-align:center;color:var(--text3);padding:24px;">Sin registros aún</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <!-- Mini chart -->
+        <div class="card">
+          <div class="card-title">Ingreso por Material (semana)</div>
+          <div class="chart-container" id="mini-chart"></div>
+          <div class="sep"></div>
+          <div class="card-title">Alertas del Sistema</div>
+          <div id="dash-alerts">
+            <div class="alert alert-info"><span class="alert-icon">ℹ️</span><span>Sistema iniciado correctamente. Todos los módulos operativos.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Inventario resumen -->
+      <div class="card">
+        <div class="flex-between mb-16">
+          <span class="card-title" style="margin-bottom:0">Resumen de Inventario</span>
+          <button class="btn btn-ghost btn-sm" onclick="nav('inventario')">Ver todo</button>
+        </div>
+        <div class="grid-3" id="dash-inv-cards"></div>
+      </div>
+    </div>
+
+    <!-- ===== PESAJE ===== -->
+    <div class="page" id="page-pesaje">
+      <div class="page-header">
+        <h1 class="page-title">⚖️ Registro de Pesaje</h1>
+        <p class="page-sub">Ingreso de material al centro de acopio</p>
+      </div>
+      <div class="grid-12">
+        <!-- Formulario -->
+        <div class="card">
+          <div class="card-title">Nueva Transacción de Entrada</div>
+          <div class="alert alert-info" style="margin-bottom:16px;">
+            <span class="alert-icon">🕐</span>
+            <div><strong>RN-03:</strong> La fecha y hora son registradas automáticamente por el servidor. No modificables.</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Fecha y Hora (automática) <span class="req">*</span></label>
+            <div class="field-readonly" id="pesaje-timestamp">Generando...</div>
+            <div class="form-hint">Generado por el servidor — RN-03</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Material <span class="req">*</span></label>
+            <select class="form-select" id="pesaje-material">
+              <option value="">— Seleccionar material —</option>
+            </select>
+            <div class="form-error" id="err-material">⚠ Debe seleccionar un material.</div>
+            <div class="form-hint">RN-07: Solo materiales de la lista maestra.</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Proveedor / Reciclador <span class="req">*</span></label>
+            <select class="form-select" id="pesaje-proveedor">
+              <option value="">— Seleccionar proveedor —</option>
+            </select>
+            <div class="form-error" id="err-proveedor">⚠ Debe seleccionar un proveedor.</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Peso Registrado (kg) <span class="req">*</span></label>
+            <input type="number" class="form-input" id="pesaje-peso" placeholder="0.00" step="0.01" min="0.01">
+            <div class="form-error" id="err-peso">⚠ El peso debe ser mayor a cero — RN-01.</div>
+            <div class="form-hint">RN-01: Solo valores positivos. RN-04: Alerta si &gt; 5,000 kg.</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Observaciones (opcional)</label>
+            <textarea class="form-textarea" id="pesaje-obs" placeholder="Estado del material, condiciones especiales..."></textarea>
+          </div>
+          <div class="flex-row">
+            <button class="btn btn-primary btn-full btn-lg" onclick="registrarPesaje()">✅ Registrar Pesaje</button>
+          </div>
+        </div>
+        <!-- Panel lateral -->
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div class="card">
+            <div class="card-title">Vista Previa del Stock Afectado</div>
+            <div id="preview-stock">
+              <p class="text-muted" style="font-size:13px;">Seleccione un material para ver el stock actual.</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">Últimas 5 Transacciones</div>
+            <div id="pesaje-hist" style="display:flex;flex-direction:column;gap:8px;">
+              <p class="text-muted" style="font-size:13px;">Sin registros.</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">🔴 Registro de Salida de Material</div>
+            <div class="form-group">
+              <label class="form-label">Material a retirar</label>
+              <select class="form-select" id="salida-material">
+                <option value="">— Seleccionar —</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Cantidad (kg)</label>
+              <input type="number" class="form-input" id="salida-peso" placeholder="0.00" step="0.01" min="0.01">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Destino / Cliente</label>
+              <input type="text" class="form-input" id="salida-destino" placeholder="Empresa compradora...">
+            </div>
+            <button class="btn btn-danger btn-full" onclick="registrarSalida()">📤 Registrar Salida</button>
+            <div class="form-hint mt-8">RN-06: Se bloqueará si el peso supera el stock disponible.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== INVENTARIO ===== -->
+    <div class="page" id="page-inventario">
+      <div class="page-header flex-between">
+        <div>
+          <h1 class="page-title">📦 Inventario General</h1>
+          <p class="page-sub">Stock acumulado actualizado en tiempo real — RN-05</p>
+        </div>
+        <div class="flex-row">
+          <div class="search-wrap">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="form-input" id="inv-search" placeholder="Buscar material..." oninput="filtrarInventario()" style="width:200px;">
+          </div>
+        </div>
+      </div>
+      <div class="grid-4 mb-16">
+        <div class="stat-card">
+          <div class="stat-label">TOTAL STOCK</div>
+          <div class="stat-value text-green mono" id="inv-total-kg">0 kg</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">CATEGORÍAS CON STOCK</div>
+          <div class="stat-value text-amber mono" id="inv-categorias">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">MAYOR VOLUMEN</div>
+          <div class="stat-value text-blue" id="inv-mayor" style="font-size:16px;">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">ACTUALIZACIÓN</div>
+          <div class="stat-value" id="inv-update" style="font-size:14px;font-family:var(--mono);">—</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>ID</th><th>Material</th><th>Categoría</th><th>Stock (kg)</th><th>Nivel</th><th>% del Total</th><th>Última Entrada</th><th>Estado</th>
+            </tr></thead>
+            <tbody id="inv-table"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== ESCÁNER IA ===== -->
+    <div class="page" id="page-scanner">
+      <div class="page-header">
+        <h1 class="page-title">🤖 Escáner de Reciclabilidad IA</h1>
+        <p class="page-sub">Identificación de materiales reciclables mediante inteligencia artificial</p>
+      </div>
+      <div class="grid-2">
+        <div>
+          <div class="card mb-16">
+            <div class="card-title">Descripción del Objeto / Imagen</div>
+            <div class="form-group">
+              <label class="form-label">Describe el objeto o pega una imagen</label>
+              <textarea class="form-textarea" id="ai-desc" placeholder="Ej: Botella de plástico transparente con etiqueta de papel, tapa rosca..." style="min-height:100px;"></textarea>
+            </div>
+            <div class="scanner-area" id="scan-drop" onclick="document.getElementById('scan-file').click()">
+              <span class="scanner-icon">📷</span>
+              <p class="scanner-text">Toca para cargar foto del objeto<br><small>o arrastra la imagen aquí</small></p>
+              <input type="file" id="scan-file" accept="image/*" style="display:none" onchange="previewImage(event)">
+            </div>
+            <div id="img-preview-wrap" style="display:none;margin-top:12px;">
+              <img id="img-preview" style="max-width:100%;border-radius:var(--r);border:1px solid var(--border2);">
+            </div>
+            <button class="btn btn-primary btn-full btn-lg mt-12" onclick="analizarConIA()">
+              🤖 Analizar con IA
+            </button>
+          </div>
+        </div>
+        <div>
+          <div class="card mb-16">
+            <div class="flex-row mb-12">
+              <div class="ai-label">RESULTADO DEL ANÁLISIS</div>
+            </div>
+            <div id="ai-result-container">
+              <p class="text-muted" style="font-size:13px;text-align:center;padding:20px;">El análisis aparecerá aquí después de procesar el objeto.</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">Guía Rápida de Materiales</div>
+            <div style="display:flex;flex-direction:column;gap:8px;" id="guide-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PROVEEDORES ===== -->
+    <div class="page" id="page-proveedores">
+      <div class="page-header flex-between">
+        <div>
+          <h1 class="page-title">👥 Proveedores</h1>
+          <p class="page-sub">Gestión de recicladores y recolectores — RN-08, RN-09</p>
+        </div>
+        <button class="btn btn-primary" onclick="openAddProveedor()">+ Nuevo Proveedor</button>
+      </div>
+      <div class="alert alert-amber mb-16">
+        <span class="alert-icon">🔒</span>
+        <span><strong>RN-09:</strong> El proveedor "Reciclador Anónimo" es inmodificable y siempre está disponible para operaciones sin datos del reciclador.</span>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>Nombre</th><th>Documento</th><th>Tipo Doc.</th><th>Teléfono</th><th>Transacciones</th><th>Estado</th><th>Acciones</th>
+            </tr></thead>
+            <tbody id="prov-table"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== REPORTES ===== -->
+    <div class="page" id="page-reportes">
+      <div class="page-header">
+        <h1 class="page-title">📋 Reportes y Trazabilidad</h1>
+        <p class="page-sub">Reportes de cierre mensual y exportación para entidades ambientales — RN-13</p>
+      </div>
+      <div class="card-relative card mb-16" id="report-card">
+        <div class="card-title">Generar Reporte de Período</div>
+        <div class="grid-3 mb-16">
+          <div class="form-group" style="margin-bottom:0">
+            <label class="form-label">Mes</label>
+            <select class="form-select" id="rep-mes">
+              <option value="1">Enero</option><option value="2">Febrero</option>
+              <option value="3">Marzo</option><option value="4">Abril</option>
+              <option value="5">Mayo</option><option value="6" selected>Junio</option>
+              <option value="7">Julio</option><option value="8">Agosto</option>
+              <option value="9">Septiembre</option><option value="10">Octubre</option>
+              <option value="11">Noviembre</option><option value="12">Diciembre</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom:0">
+            <label class="form-label">Año</label>
+            <select class="form-select" id="rep-year">
+              <option value="2024">2024</option><option value="2025" selected>2025</option>
+            </select>
+          </div>
+          <div style="display:flex;align-items:flex-end;gap:8px;">
+            <button class="btn btn-primary" onclick="generarReporte()">📊 Generar</button>
+            <button class="btn btn-secondary" onclick="exportarReporte()">⬇️ Exportar CSV</button>
+          </div>
+        </div>
+        <div id="rep-result" style="display:none;">
+          <div class="sep"></div>
+          <div class="alert alert-warning mb-16" id="rep-altered-warn" style="display:none;">
+            <span class="alert-icon">⚠️</span>
+            <strong>RN-13:</strong> Se detectaron modificaciones en registros de este período cerrado. El historial fue alterado.
+          </div>
+          <div class="grid-4 mb-16" id="rep-stats"></div>
+          <div class="table-wrap"><table>
+            <thead><tr><th>Fecha</th><th>Material</th><th>Proveedor</th><th>Peso (kg)</th><th>Tipo</th></tr></thead>
+            <tbody id="rep-table"></tbody>
+          </table></div>
+        </div>
+        <div id="admin-lock" class="locked-overlay" style="display:none;">
+          <div style="font-size:36px;">🔒</div>
+          <div class="locked-text">Solo el Administrador puede acceder a los reportes — RN-10</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== LISTA MAESTRA ===== -->
+    <div class="page" id="page-materiales">
+      <div class="page-header flex-between">
+        <div>
+          <h1 class="page-title">🏷️ Lista Maestra de Materiales</h1>
+          <p class="page-sub">Solo el Administrador puede crear, editar o desactivar materiales — RN-07</p>
+        </div>
+        <button class="btn btn-primary" onclick="openAddMaterial()">+ Nuevo Material</button>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>Código</th><th>Material</th><th>Categoría</th><th>Precio Ref. (S/./kg)</th><th>Stock Actual</th><th>Estado</th><th>Acciones</th>
+            </tr></thead>
+            <tbody id="mat-table"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== AUDITORÍA ===== -->
+    <div class="page" id="page-auditoria">
+      <div class="page-header">
+        <h1 class="page-title">🔍 Log de Auditoría</h1>
+        <p class="page-sub">Registro inmutable de todas las modificaciones — RN-12</p>
+      </div>
+      <div class="grid-21">
+        <div class="card">
+          <div class="card-title">Historial de Cambios</div>
+          <div id="audit-list"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Resumen de Actividad</div>
+          <div style="display:flex;flex-direction:column;gap:10px;" id="audit-summary"></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+
+<!-- API Client -->
+<script src="/static/api.js"></script>
+
+<script>
+// ============================================================
+// EcoAcopio ERP — Frontend integrado con Backend Real
+// ============================================================
+
+// ===== STATE =====
+const APP = {
+  user: null,
+  role: null,
+  materiales: [],
+  proveedores: [],
+  transacciones: [],
+  auditLog: [],
+  inventario: {},   // { material_id: stock_kg }
+  nextTxId: 1,
+};
+
+// ===== CLOCK =====
+function updateClock() {
+  const el = document.getElementById('top-clock');
+  if(el) el.textContent = new Date().toLocaleTimeString('es-PE');
+}
+setInterval(updateClock, 1000);
+setInterval(() => {
+  const el = document.getElementById('pesaje-timestamp');
+  if(el) el.textContent = new Date().toLocaleString('es-PE', {day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}, 1000);
+updateClock();
+
+// ===== CSS SPIN =====
+const styleEl = document.createElement('style');
+styleEl.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
+document.head.appendChild(styleEl);
+
+// ===== LOGIN =====
+async function doLogin() {
+  const email = document.getElementById('login-user').value.trim();
+  const password = document.getElementById('login-pass').value;
+
+  if (!email || !password) {
+    showToast('error', 'Ingresa tu email y contraseña.');
+    return;
+  }
+
+  const btn = document.querySelector('.login-demo-btns .btn');
+
+  btn.disabled = true;
+  btn.textContent = '⏳ Ingresando...';
+
+  try {
+    const user = await Api.login(email, password);
+
+    APP.user = user.email;
+    APP.role = user.rol;
+
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('main-topbar').style.display = 'flex';
+    document.getElementById('main-layout').style.display = 'flex';
+
+    document.getElementById('user-name-disp').textContent =
+      user.nombre + ' ' + user.apellido;
+
+    const roleEl = document.getElementById('user-role-disp');
+
+    roleEl.textContent =
+      user.rol === 'admin' ? 'Admin' : 'Operario';
+
+    roleEl.className =
+      'user-role-pill ' +
+      (user.rol === 'admin'
+        ? 'role-admin'
+        : 'role-operario');
+
+    // Mostrar secciones solo admin
+    document.querySelectorAll('.admin-only').forEach(el => {
+      el.style.display =
+        user.rol === 'admin' ? 'flex' : 'none';
+    });
+
+    // Overlay reportes
+    if (user.rol !== 'admin') {
+      const lock = document.getElementById('admin-lock');
+      if (lock) lock.style.display = 'flex';
+    }
+
+    await cargarDatosIniciales();
+
+    showToast(
+      'success',
+      '🔓 Sesión iniciada correctamente'
+    );
+
+    nav('dashboard');
+
+  } catch (e) {
+    showToast(
+      'error',
+      '❌ ' + (e.message || 'Error al iniciar sesión')
+    );
+
+    btn.disabled = false;
+    btn.textContent = '🔓 Ingresar';
+  }
+}
+
+async function cargarDatosIniciales() {
+  try {
+    const [matsData, provsData, invData] = await Promise.all([
+      Api.materiales(false),
+      Api.proveedores(),
+      Api.inventario(),
+    ]);
+
+    APP.materiales = matsData.map(m => ({
+      id: m.id,
+      codigo: m.codigo,
+      nombre: m.nombre,
+      categoria: m.categoria || '—',
+      precio: m.precio_referencial || 0,
+      activo: m.estado === 'activo',
+      emoji: m.emoji || '♻️',
+      stock_kg: m.stock_kg || 0,
+    }));
+
+    APP.proveedores = provsData.map(p => ({
+      id: p.id,
+      nombre: p.nombre,
+      documento: p.numero_documento || '—',
+      tipoDoc: p.tipo_documento || '—',
+      telefono: p.telefono || '—',
+      anonimo: p.es_anonimo,
+      total_transacciones: p.total_transacciones || 0,
+    }));
+
+    // Cargar inventario
+    APP.inventario = {};
+    invData.items.forEach(i => { APP.inventario[i.id] = i.stock_kg || 0; });
+
+    // Cargar últimas transacciones para el historial local
+    const pesajesData = await Api.pesajes('?limit=50');
+    APP.transacciones = pesajesData.items.map(p => ({
+      id: p.id,
+      material: p.material,
+      materialId: p.material_id || p.id,
+      materialEmoji: p.emoji || '♻️',
+      proveedor: p.proveedor,
+      proveedorId: p.proveedor_id || '',
+      peso: p.peso_kg,
+      tipo: p.tipo,
+      obs: p.observaciones || '',
+      timestamp: p.registrado_en,
+      modificado: p.modificado,
+      anulado: p.anulado,
+    }));
+
+    poblarSelects();
+    refreshAll();
+  } catch(e) {
+    showToast('error', 'Error al cargar datos: ' + e.message);
+  }
+}
+
+async function logout() {
+  try { await Api.logout(); } catch {}
+  location.reload();
+}
+
+// ===== NAVIGATION =====
+function nav(page) {
+  if(!['dashboard','pesaje','inventario','scanner','proveedores'].includes(page)) {
+    if(APP.role !== 'admin') { showToast('error','🔒 Solo el Administrador puede acceder a esta sección — RN-10'); return; }
+  }
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const pg = document.getElementById('page-'+page);
+  if(pg) pg.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => {
+    if(n.getAttribute('onclick') && n.getAttribute('onclick').includes("'"+page+"'")) n.classList.add('active');
+  });
+  if(page==='dashboard') cargarDashboard();
+  if(page==='inventario') cargarInventario();
+  if(page==='proveedores') renderProveedores();
+  if(page==='materiales') renderMateriales();
+  if(page==='auditoria') cargarAuditoria();
+  if(page==='scanner') renderGuide();
+  if(page==='reportes' && APP.role!=='admin') document.getElementById('admin-lock').style.display='flex';
+}
+
+// ===== REFRESH ALL =====
+function refreshAll() {
+  renderDashboard();
+  poblarSelects();
+}
+
+function poblarSelects() {
+  const mats = APP.materiales.filter(m=>m.activo);
+  ['pesaje-material','salida-material'].forEach(id => {
+    const sel = document.getElementById(id);
+    if(!sel) return;
+    sel.innerHTML = '<option value="">— Seleccionar material —</option>';
+    mats.forEach(m => { const o=document.createElement('option'); o.value=m.id; o.textContent=m.emoji+' '+m.nombre; sel.appendChild(o); });
+  });
+  const psel = document.getElementById('pesaje-proveedor');
+  if(psel) {
+    psel.innerHTML = '<option value="">— Seleccionar proveedor —</option>';
+    APP.proveedores.forEach(p => { const o=document.createElement('option'); o.value=p.id; o.textContent=(p.anonimo?'⚪ ':'👤 ')+p.nombre; psel.appendChild(o); });
+  }
+}
+
+// ===== DASHBOARD =====
+async function cargarDashboard() {
+  try {
+    const data = await Api.dashboardStats();
+    const s = data.stats;
+    document.getElementById('stat-pesajes').textContent = s.pesajes_hoy;
+    document.getElementById('stat-kg').textContent = s.kg_hoy.toFixed(1);
+    document.getElementById('stat-provs').textContent = s.proveedores_activos;
+    document.getElementById('stat-mats').textContent = s.materiales_en_uso;
+    document.getElementById('dash-date').textContent = new Date().toLocaleDateString('es-PE', {weekday:'long',year:'numeric',month:'long',day:'numeric'});
+
+    const sideStock = document.getElementById('sidebar-stock');
+    if(sideStock) sideStock.textContent = s.stock_total.toFixed(1) + ' kg';
+    const sideTx = document.getElementById('sidebar-txns');
+    if(sideTx) sideTx.textContent = s.total_transacciones + ' transacciones';
+
+    // Últimas transacciones
+    const tbody = document.getElementById('dash-table');
+    if(data.last_transactions && data.last_transactions.length > 0) {
+      tbody.innerHTML = data.last_transactions.map(t => `<tr>
+        <td>${t.emoji||'♻️'} ${t.material}</td>
+        <td>${t.proveedor}</td>
+        <td class="mono ${t.tipo==='entrada'?'text-green':'text-red'}">${t.tipo==='entrada'?'+':'−'}${parseFloat(t.peso_kg).toFixed(2)} kg</td>
+        <td class="mono text-muted">${new Date(t.registrado_en).toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit'})}</td>
+        <td><span class="badge ${t.anulado?'badge-red':t.modificado?'badge-amber':'badge-green'}">${t.anulado?'Anulado':t.modificado?'Modificado':'OK'}</span></td>
+      </tr>`).join('');
+    } else {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:24px;">Sin registros aún</td></tr>';
+    }
+
+    // Mini chart
+    const chartDiv = document.getElementById('mini-chart');
+    if(data.chart_data && data.chart_data.length > 0) {
+      const max = Math.max(...data.chart_data.map(d=>d.kg));
+      chartDiv.innerHTML = data.chart_data.map(d => {
+        const pct = max>0?(d.kg/max*100).toFixed(0):0;
+        return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+          <span style="width:20px;text-align:center">${d.emoji}</span>
+          <div style="flex:1;background:var(--bg3);border-radius:3px;height:8px;">
+            <div style="width:${pct}%;background:var(--green);border-radius:3px;height:8px;transition:.3s;"></div>
+          </div>
+          <span class="mono" style="font-size:12px;color:var(--text2);min-width:60px;text-align:right">${d.kg.toFixed(1)} kg</span>
+        </div>`;
+      }).join('');
+    } else {
+      chartDiv.innerHTML = '<p class="text-muted" style="font-size:13px;text-align:center;padding:16px;">Sin actividad esta semana</p>';
+    }
+
+    // Inventario resumen
+    const invCards = document.getElementById('dash-inv-cards');
+    if(data.inv_summary && data.inv_summary.length > 0) {
+      invCards.innerHTML = data.inv_summary.map(i => `
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:12px;">
+          <div class="flex-between mb-8">
+            <span>${i.emoji} <strong>${i.nombre}</strong></span>
+            <span class="badge badge-gray">${i.codigo}</span>
+          </div>
+          <div class="mono fw-700 text-green" style="font-size:18px;">${i.stock_kg.toFixed(2)} kg</div>
+          <div class="progress-bar mt-8"><div class="progress-fill fill-green" style="width:${i.pct}%"></div></div>
+          <div style="font-size:11px;color:var(--text3);margin-top:4px">${i.pct}% del stock total · ${i.categoria||'—'}</div>
+        </div>`).join('');
+    } else {
+      invCards.innerHTML = '<p class="text-muted" style="font-size:13px;padding:16px;">Sin stock registrado</p>';
+    }
+  } catch(e) {
+    console.error('Error cargando dashboard:', e);
+    renderDashboard(); // fallback local
+  }
+}
+
+function renderDashboard() {
+  const today = new Date().toDateString();
+  const todayTx = APP.transacciones.filter(t=>new Date(t.timestamp).toDateString()===today&&!t.anulado);
+  const todayKg = todayTx.filter(t=>t.tipo==='entrada').reduce((s,t)=>s+t.peso,0);
+  document.getElementById('stat-pesajes').textContent = todayTx.length;
+  document.getElementById('stat-kg').textContent = todayKg.toFixed(1);
+  document.getElementById('stat-provs').textContent = APP.proveedores.length;
+  document.getElementById('stat-mats').textContent = Object.values(APP.inventario).filter(v=>v>0).length;
+  document.getElementById('dash-date').textContent = new Date().toLocaleDateString('es-PE', {weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const last8 = [...APP.transacciones].slice(0,8);
+  const tbody = document.getElementById('dash-table');
+  if(last8.length>0) {
+    tbody.innerHTML = last8.map(t=>`<tr>
+      <td>${t.materialEmoji||'♻️'} ${t.material}</td>
+      <td>${t.proveedor}</td>
+      <td class="mono ${t.tipo==='entrada'?'text-green':'text-red'}">${t.tipo==='entrada'?'+':'−'}${parseFloat(t.peso).toFixed(2)} kg</td>
+      <td class="mono text-muted">${new Date(t.timestamp).toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit'})}</td>
+      <td><span class="badge ${t.anulado?'badge-red':t.modificado?'badge-amber':'badge-green'}">${t.anulado?'Anulado':t.modificado?'Modificado':'OK'}</span></td>
+    </tr>`).join('');
+  }
+  const sideStock = document.getElementById('sidebar-stock');
+  if(sideStock) sideStock.textContent = Object.values(APP.inventario).reduce((s,v)=>s+v,0).toFixed(1)+' kg';
+  const sideTx = document.getElementById('sidebar-txns');
+  if(sideTx) sideTx.textContent = APP.transacciones.filter(t=>!t.anulado).length+' transacciones';
+}
+
+// ===== PESAJE =====
+function validarPesaje() {
+  let ok = true;
+  const errMat = document.getElementById('err-material');
+  const errProv = document.getElementById('err-proveedor');
+  const errPeso = document.getElementById('err-peso');
+  [errMat,errProv,errPeso].forEach(e=>e.classList.remove('show'));
+  ['pesaje-material','pesaje-proveedor','pesaje-peso'].forEach(id=>document.getElementById(id).classList.remove('error'));
+  const matId = document.getElementById('pesaje-material').value;
+  const provId = document.getElementById('pesaje-proveedor').value;
+  const peso = parseFloat(document.getElementById('pesaje-peso').value);
+  if(!matId) { errMat.classList.add('show'); document.getElementById('pesaje-material').classList.add('error'); ok=false; }
+  if(!provId) { errProv.classList.add('show'); document.getElementById('pesaje-proveedor').classList.add('error'); ok=false; }
+  if(!peso || peso<=0 || isNaN(peso)) { errPeso.classList.add('show'); document.getElementById('pesaje-peso').classList.add('error'); ok=false; }
+  return ok;
+}
+
+function registrarPesaje() {
+  if(!validarPesaje()) return;
+  const matId = document.getElementById('pesaje-material').value;
+  const provId = document.getElementById('pesaje-proveedor').value;
+  const peso = parseFloat(document.getElementById('pesaje-peso').value);
+  const obs = document.getElementById('pesaje-obs').value;
+  if(peso > 5000) {
+    openModal(`<div class="modal-warn"><div class="flex-row mb-8"><span class="modal-warn-icon">⚠️</span><strong>Advertencia de Capacidad — RN-04</strong></div><p class="modal-warn-text">El peso ingresado (<strong>${peso.toFixed(2)} kg</strong>) supera el límite lógico de 5,000 kg.<br>¿Deseas continuar?</p></div>`,
+      ()=>{ ejecutarPesaje(matId, provId, peso, obs, 'entrada', true); });
+    return;
+  }
+  ejecutarPesaje(matId, provId, peso, obs, 'entrada', false);
+}
+
+async function ejecutarPesaje(matId, provId, peso, obs, tipo, confirmarAlerta) {
+  const btn = document.querySelector('#page-pesaje .btn-primary');
+  if(btn) { btn.disabled=true; btn.textContent='⏳ Registrando...'; }
+  closeModal();
+  try {
+    await Api.crearPesaje({
+      material_id: matId,
+      proveedor_id: provId,
+      tipo,
+      peso_kg: peso,
+      observaciones: obs || null,
+      confirmar_alerta: confirmarAlerta,
+    });
+    // Actualizar datos locales
+    const mat = APP.materiales.find(m=>m.id===matId);
+    const prov = APP.proveedores.find(p=>p.id===provId);
+    const tx = {
+      id: 'tx-'+Date.now(),
+      material: mat?.nombre||'—', materialId: matId, materialEmoji: mat?.emoji||'♻️',
+      proveedor: prov?.nombre||'—', proveedorId: provId,
+      peso, tipo, obs, timestamp: new Date().toISOString(), modificado: false, anulado: false,
+    };
+    APP.transacciones.unshift(tx);
+    actualizarInventario(matId, tipo==='entrada'?peso:-peso);
+
+    ['pesaje-material','pesaje-proveedor'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('pesaje-peso').value='';
+    document.getElementById('pesaje-obs').value='';
+    document.getElementById('preview-stock').innerHTML='<p class="text-muted" style="font-size:13px;">Seleccione un material.</p>';
+    refreshAll();
+    renderHistPesaje();
+    showToast('success',`✅ Pesaje registrado: ${mat?.emoji||''} ${mat?.nombre||''} — ${peso.toFixed(2)} kg`);
+  } catch(e) {
+    if(e.data?.code === 'RN-04') {
+      openModal(`<div class="modal-warn"><div class="flex-row mb-8"><span class="modal-warn-icon">⚠️</span><strong>Advertencia RN-04</strong></div><p class="modal-warn-text">${e.data.message}</p></div>`,
+        ()=>{ ejecutarPesaje(matId, provId, peso, obs, tipo, true); });
+    } else {
+      showToast('error','❌ '+e.message);
+    }
+  } finally {
+    if(btn) { btn.disabled=false; btn.textContent='✅ Registrar Pesaje'; }
+  }
+}
+
+async function registrarSalida() {
+  const matId = document.getElementById('salida-material').value;
+  const peso = parseFloat(document.getElementById('salida-peso').value);
+  const destino = document.getElementById('salida-destino').value;
+  if(!matId) { showToast('error','Selecciona un material para la salida.'); return; }
+  if(!peso || peso<=0) { showToast('error','El peso de salida debe ser mayor a cero.'); return; }
+  const stock = APP.inventario[matId]||0;
+  if(peso > stock) {
+    showToast('error',`🚫 Stock insuficiente — RN-06: Stock actual es ${stock.toFixed(2)} kg.`);
+    return;
+  }
+  const anonimo = APP.proveedores.find(p=>p.anonimo);
+  const provId = anonimo ? anonimo.id : APP.proveedores[0]?.id;
+  if(!provId) { showToast('error','No hay proveedor disponible para salida.'); return; }
+
+  const btn = document.querySelector('#page-pesaje .btn-danger');
+  if(btn) { btn.disabled=true; btn.textContent='⏳...'; }
+  try {
+    await Api.crearPesaje({
+      material_id: matId, proveedor_id: provId, tipo: 'salida',
+      peso_kg: peso, observaciones: destino||null, confirmar_alerta: false,
+    });
+    const mat = APP.materiales.find(m=>m.id===matId);
+    APP.transacciones.unshift({
+      id: 'tx-'+Date.now(), material: mat?.nombre||'—', materialId: matId, materialEmoji: mat?.emoji||'♻️',
+      proveedor: destino||'Sin destino', proveedorId: provId,
+      peso, tipo:'salida', obs:destino, timestamp:new Date().toISOString(), modificado:false, anulado:false,
+    });
+    actualizarInventario(matId, -peso);
+    document.getElementById('salida-material').value='';
+    document.getElementById('salida-peso').value='';
+    document.getElementById('salida-destino').value='';
+    refreshAll();
+    showToast('success',`📤 Salida registrada: ${mat?.nombre||''} — ${peso.toFixed(2)} kg`);
+  } catch(e) {
+    showToast('error','❌ '+e.message);
+  } finally {
+    if(btn) { btn.disabled=false; btn.textContent='📤 Registrar Salida'; }
+  }
+}
+
+function actualizarInventario(matId, delta) {
+  if(!APP.inventario[matId]) APP.inventario[matId]=0;
+  APP.inventario[matId]=Math.max(0, APP.inventario[matId]+delta);
+  const mat = APP.materiales.find(m=>m.id===matId);
+  if(mat) mat.stock_kg = APP.inventario[matId];
+}
+
+function renderHistPesaje() {
+  const div = document.getElementById('pesaje-hist');
+  const last5 = APP.transacciones.slice(0,5);
+  if(last5.length===0){div.innerHTML='<p class="text-muted" style="font-size:13px;">Sin registros.</p>';return;}
+  div.innerHTML=last5.map(t=>`<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-sm);padding:8px 10px;">
+    <div class="flex-between">
+      <span style="font-size:13px;font-weight:600">${t.materialEmoji} ${t.material}</span>
+      <span class="mono ${t.tipo==='entrada'?'text-green':'text-red'}" style="font-size:13px;">${t.tipo==='entrada'?'+':'−'}${parseFloat(t.peso).toFixed(2)} kg</span>
+    </div>
+    <div class="flex-between mt-4">
+      <span class="text-muted" style="font-size:11px;">${t.proveedor}</span>
+      <span class="text-muted mono" style="font-size:11px;">${new Date(t.timestamp).toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit'})}</span>
+    </div>
+  </div>`).join('');
+}
+
+// Preview stock al seleccionar material
+document.getElementById('pesaje-material').addEventListener('change', async function() {
+  const matId = this.value;
+  const div = document.getElementById('preview-stock');
+  if(!matId){div.innerHTML='<p class="text-muted" style="font-size:13px;">Seleccione un material.</p>';return;}
+  const mat = APP.materiales.find(m=>m.id===matId);
+  const stock = APP.inventario[matId]||0;
+  div.innerHTML = `
+    <div class="flex-between mb-8">
+      <span style="font-size:20px">${mat?.emoji||'♻️'}</span>
+      <span class="badge badge-gray">${mat?.codigo||''}</span>
+    </div>
+    <div style="font-size:24px;font-weight:700;color:var(--green);font-family:var(--mono)">${stock.toFixed(2)} kg</div>
+    <div class="text-muted" style="font-size:12px;margin-top:4px;">Stock actual en almacén</div>
+    <div class="text-muted" style="font-size:12px;margin-top:2px;">Precio ref: S/.${(mat?.precio||0).toFixed(2)}/kg</div>`;
+});
+
+// ===== INVENTARIO =====
+async function cargarInventario() {
+  const buscar = (document.getElementById('inv-search')||{value:''}).value;
+  try {
+    const data = await Api.inventario(buscar);
+    renderInventarioData(data);
+  } catch(e) { renderInventario(); }
+}
+
+function renderInventarioData(data) {
+  const tbody = document.getElementById('inv-table');
+  const items = data.items || [];
+  if(items.length===0){
+    tbody.innerHTML='<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--text3)">Sin resultados</td></tr>';
+    return;
+  }
+  const total = data.resumen?.total_kg || 0;
+  let mayor={nombre:'—',kg:0};
+  tbody.innerHTML=items.map(i=>{
+    if(i.stock_kg>mayor.kg) mayor={nombre:i.nombre,kg:i.stock_kg};
+    const kg=parseFloat(i.stock_kg)||0;
+    const pct=i.pct_total||0;
+    const nivel=i.nivel||'Bajo';
+    const nivelClr=nivel==='Alto'?'badge-green':nivel==='Medio'?'badge-amber':'badge-red';
+    const fillClr=nivel==='Alto'?'fill-green':nivel==='Medio'?'fill-amber':'fill-red';
+    const lastDate=i.ultima_entrada?new Date(i.ultima_entrada).toLocaleDateString('es-PE',{day:'2-digit',month:'2-digit'}):'—';
+    return `<tr>
+      <td><span class="badge badge-gray">${i.codigo}</span></td>
+      <td><span class="main-cell">${i.emoji||'♻️'} ${i.nombre}</span></td>
+      <td class="text-muted">${i.categoria||'—'}</td>
+      <td class="mono fw-700 ${kg>0?'text-green':'text-muted'}">${kg.toFixed(2)}</td>
+      <td style="min-width:120px">
+        <div class="progress-bar"><div class="progress-fill ${fillClr}" style="width:${pct}%"></div></div>
+        <span style="font-size:10px;color:var(--text3)">${pct}%</span>
+      </td>
+      <td class="mono text-muted">${pct.toFixed(1)}%</td>
+      <td class="text-muted">${lastDate}</td>
+      <td><span class="badge ${nivelClr}">${nivel}</span></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('inv-total-kg').textContent=(total).toFixed(2)+' kg';
+  document.getElementById('inv-categorias').textContent=data.resumen?.materiales_con_stock||0;
+  document.getElementById('inv-mayor').textContent=mayor.nombre;
+  document.getElementById('inv-update').textContent=new Date().toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+
+function renderInventario() {
+  // Fallback local si la API falla
+  const tbody = document.getElementById('inv-table');
+  const search = (document.getElementById('inv-search')||{value:''}).value.toLowerCase();
+  const total = Object.values(APP.inventario).reduce((s,v)=>s+v,0);
+  let mayor={nombre:'—',kg:0};
+  const rows = APP.materiales.filter(m=>m.activo&&m.nombre.toLowerCase().includes(search)).map(m=>{
+    const kg=APP.inventario[m.id]||0;
+    if(kg>mayor.kg) mayor={nombre:m.nombre,kg};
+    const pct=total>0?(kg/total*100).toFixed(1):'0.0';
+    const nivel=kg>100?'Alto':kg>30?'Medio':'Bajo';
+    const nivelClr=kg>100?'badge-green':kg>30?'badge-amber':'badge-red';
+    const fillClr=kg>100?'fill-green':kg>30?'fill-amber':'fill-red';
+    const fillPct=total>0?Math.round(kg/total*100):0;
+    return `<tr>
+      <td><span class="badge badge-gray">${m.codigo}</span></td>
+      <td><span class="main-cell">${m.emoji} ${m.nombre}</span></td>
+      <td class="text-muted">${m.categoria}</td>
+      <td class="mono fw-700 ${kg>0?'text-green':'text-muted'}">${kg.toFixed(2)}</td>
+      <td style="min-width:120px"><div class="progress-bar"><div class="progress-fill ${fillClr}" style="width:${fillPct}%"></div></div><span style="font-size:10px;color:var(--text3)">${fillPct}%</span></td>
+      <td class="mono text-muted">${pct}%</td>
+      <td class="text-muted">—</td>
+      <td><span class="badge ${nivelClr}">${nivel}</span></td>
+    </tr>`;
+  });
+  tbody.innerHTML=rows.join('')||'<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--text3)">Sin resultados</td></tr>';
+  document.getElementById('inv-total-kg').textContent=total.toFixed(2)+' kg';
+  document.getElementById('inv-categorias').textContent=APP.materiales.filter(m=>m.activo&&(APP.inventario[m.id]||0)>0).length;
+  document.getElementById('inv-mayor').textContent=mayor.kg>0?mayor.nombre:'—';
+  document.getElementById('inv-update').textContent=new Date().toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+
+function filtrarInventario() { cargarInventario(); }
+
+// ===== IA SCANNER =====
+function renderGuide() {
+  const guide=document.getElementById('guide-list');
+  if(!guide)return;
+  const items=[
+    {emoji:'♻️',label:'PET / HDPE',desc:'Plásticos duros con símbolo ♳ ♴ — Reciclable',clr:'badge-green'},
+    {emoji:'📄',label:'Papel y Cartón',desc:'Limpio y seco — Reciclable',clr:'badge-green'},
+    {emoji:'🥫',label:'Metales / Latas',desc:'Aluminio, acero, cobre — Alto valor',clr:'badge-blue'},
+    {emoji:'🍾',label:'Vidrio',desc:'Separado por color — Reciclable',clr:'badge-amber'},
+    {emoji:'⚠️',label:'PVC / Poliestireno',desc:'Símbolo ♵ ♷ — Difícil reciclaje',clr:'badge-red'},
+    {emoji:'🚫',label:'Papel plastificado',desc:'Tetrapack sin separar — No reciclable',clr:'badge-red'},
+  ];
+  guide.innerHTML=items.map(i=>`<div class="flex-row" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-sm);padding:8px 12px;">
+    <span style="font-size:20px;flex-shrink:0">${i.emoji}</span>
+    <div style="flex:1"><div style="font-size:13px;font-weight:600">${i.label}</div><div style="font-size:11px;color:var(--text3)">${i.desc}</div></div>
+    <span class="badge ${i.clr}" style="flex-shrink:0">${i.clr.includes('green')?'✅ OK':i.clr.includes('blue')?'💰 Valor':i.clr.includes('amber')?'⚠️ Separar':'🚫 No'}</span>
+  </div>`).join('');
+}
+
+function previewImage(event) {
+  const file=event.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    document.getElementById('img-preview').src=e.target.result;
+    document.getElementById('img-preview-wrap').style.display='block';
+    document.getElementById('scan-drop').style.borderColor='var(--green)';
+  };
+  reader.readAsDataURL(file);
+}
+
+async function analizarConIA() {
+  const desc=document.getElementById('ai-desc').value.trim();
+  const fileInput=document.getElementById('scan-file');
+  const file=fileInput.files[0];
+  if(!desc&&!file){showToast('warning','Describe el objeto o sube una imagen para analizar.');return;}
+  const container=document.getElementById('ai-result-container');
+  container.innerHTML=`<div style="text-align:center;padding:24px;"><div style="font-size:30px;animation:spin 1s linear infinite;display:inline-block">⏳</div><p style="color:var(--text3);margin-top:8px">Analizando con IA...</p></div>`;
+  document.querySelector('#page-scanner .btn-primary').disabled=true;
+  try {
+    const result=await Api.analizarMaterial(desc||null, file||null);
+    renderAIResult(result);
+  } catch(e) {
+    container.innerHTML=`<div class="alert alert-error"><span class="alert-icon">❌</span>${e.message||'Error al procesar con IA.'}</div>`;
+  }
+  document.querySelector('#page-scanner .btn-primary').disabled=false;
+}
+
+function renderAIResult(res) {
+  const container=document.getElementById('ai-result-container');
+  const isRec=res.reciclable;
+  const confClr=res.confianza==='Alta'?'badge-green':res.confianza==='Media'?'badge-amber':'badge-red';
+  container.innerHTML=`
+    <div style="background:${isRec?'var(--green-bg)':'var(--red-bg)'};border:1px solid ${isRec?'var(--green-border)':'var(--red-border)'};border-radius:var(--r);padding:16px;margin-bottom:14px;">
+      <div class="flex-between mb-8">
+        <div style="font-size:32px">${isRec?'♻️':'🚫'}</div>
+        <div style="text-align:right">
+          <div style="font-size:18px;font-weight:700;color:${isRec?'var(--green)':'var(--red)'}">${isRec?'✅ RECICLABLE':'❌ NO RECICLABLE'}</div>
+          <div><span class="badge ${confClr}">${res.confianza} confianza</span></div>
+        </div>
+      </div>
+      <p style="font-size:13px;color:var(--text2);line-height:1.5;">${res.motivo}</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div class="flex-between" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;"><span class="text-muted" style="font-size:12px">Material identificado</span><span style="font-weight:600">${res.material}</span></div>
+      <div class="flex-between" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;"><span class="text-muted" style="font-size:12px">Categoría</span><span class="badge badge-blue">${res.categoria}</span></div>
+      <div class="flex-between" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;"><span class="text-muted" style="font-size:12px">Código</span><span class="mono" style="font-size:13px">${res.codigo_material}</span></div>
+      <div class="flex-between" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;"><span class="text-muted" style="font-size:12px">Valor referencial</span><span class="mono text-amber fw-700">${res.valor_referencial}</span></div>
+      ${isRec?`<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;"><div class="text-muted" style="font-size:12px;margin-bottom:6px">Instrucciones de preparación</div><div style="font-size:13px;line-height:1.5;">${res.instrucciones}</div></div>`:''}
+    </div>
+    ${isRec?`<button class="btn btn-primary btn-full mt-12" onclick="nav('pesaje')">⚖️ Ir a Registrar este Material</button>`:''}`;
+}
+
+// ===== PROVEEDORES =====
+function renderProveedores() {
+  const tbody=document.getElementById('prov-table');
+  tbody.innerHTML=APP.proveedores.map(p=>`<tr>
+    <td><span class="main-cell">${p.anonimo?'⚪':'👤'} ${p.nombre}</span></td>
+    <td class="mono">${p.documento}</td>
+    <td><span class="badge badge-gray">${p.tipoDoc}</span></td>
+    <td>${p.telefono}</td>
+    <td class="mono">${p.total_transacciones||0}</td>
+    <td><span class="badge ${p.anonimo?'badge-amber':'badge-green'}">${p.anonimo?'Genérico':'Activo'}</span></td>
+    <td><div class="table-actions">
+      ${!p.anonimo&&APP.role==='admin'?`<button class="btn btn-ghost btn-sm" onclick="eliminarProveedor('${p.id}')">🗑️</button>`:''}
+      ${p.anonimo?'<span class="text-muted" style="font-size:11px">🔒 Inmodificable</span>':''}
+    </div></td>
+  </tr>`).join('');
+}
+
+function openAddProveedor() {
+  openModal(`
+    <div class="modal-title">➕ Nuevo Proveedor</div>
+    <div class="modal-sub">RN-08: El documento debe ser único en el sistema</div>
+    <div class="form-group"><label class="form-label">Nombre completo <span class="req">*</span></label><input class="form-input" id="m-nombre" placeholder="Nombre o razón social"></div>
+    <div class="form-group"><label class="form-label">Tipo de documento</label>
+      <select class="form-select" id="m-tipodoc"><option value="DNI">DNI</option><option value="RUC">RUC</option><option value="CE">Carné de Extranjería</option><option value="PASAPORTE">Pasaporte</option></select>
+    </div>
+    <div class="form-group"><label class="form-label">N° Documento</label><input class="form-input" id="m-doc" placeholder="00000000" maxlength="11"></div>
+    <div class="form-group"><label class="form-label">Teléfono</label><input class="form-input" id="m-tel" placeholder="9XX XXX XXX"></div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="guardarProveedor()">Guardar</button></div>
+  `);
+}
+
+async function guardarProveedor() {
+  const nombre=document.getElementById('m-nombre').value.trim();
+  if(!nombre){showToast('error','El nombre es obligatorio');return;}
+  try {
+    await Api.crearProveedor({
+      nombre, tipo_documento:document.getElementById('m-tipodoc').value,
+      numero_documento:document.getElementById('m-doc').value||null,
+      telefono:document.getElementById('m-tel').value||null,
+    });
+    closeModal();
+    const provsData=await Api.proveedores();
+    APP.proveedores=provsData.map(p=>({
+      id:p.id,nombre:p.nombre,documento:p.numero_documento||'—',
+      tipoDoc:p.tipo_documento||'—',telefono:p.telefono||'—',
+      anonimo:p.es_anonimo,total_transacciones:p.total_transacciones||0,
+    }));
+    renderProveedores();
+    poblarSelects();
+    showToast('success','✅ Proveedor registrado');
+  } catch(e){showToast('error','❌ '+e.message);}
+}
+
+async function eliminarProveedor(id) {
+  if(!confirm('¿Desactivar este proveedor?'))return;
+  try {
+    await Api.eliminarProveedor(id);
+    APP.proveedores=APP.proveedores.filter(p=>p.id!==id);
+    renderProveedores();poblarSelects();
+    showToast('success','Proveedor desactivado.');
+  } catch(e){showToast('error','❌ '+e.message);}
+}
+
+// ===== MATERIALES =====
+async function renderMateriales() {
+  const tbody=document.getElementById('mat-table');
+  tbody.innerHTML=APP.materiales.map(m=>`<tr>
+    <td><span class="badge badge-gray">${m.codigo}</span></td>
+    <td><span class="main-cell">${m.emoji} ${m.nombre}</span></td>
+    <td class="text-muted">${m.categoria}</td>
+    <td class="mono text-amber">S/.${(m.precio||0).toFixed(2)}</td>
+    <td class="mono ${(APP.inventario[m.id]||0)>0?'text-green':'text-muted'}">${(APP.inventario[m.id]||0).toFixed(2)} kg</td>
+    <td><span class="badge ${m.activo?'badge-green':'badge-red'}">${m.activo?'Activo':'Inactivo'}</span></td>
+    <td><div class="table-actions">
+      ${APP.role==='admin'?`<button class="btn btn-ghost btn-sm" onclick="openEditMaterial('${m.id}')">✏️</button>
+        <button class="btn btn-ghost btn-sm" onclick="toggleMaterial('${m.id}')">${m.activo?'⏸️':'▶️'}</button>`:'—'}
+    </div></td>
+  </tr>`).join('');
+}
+
+function openAddMaterial() {
+  if(APP.role!=='admin'){showToast('error','🔒 Solo el Administrador puede crear materiales — RN-07');return;}
+  openModal(`
+    <div class="modal-title">➕ Nuevo Material</div>
+    <div class="form-group"><label class="form-label">Código <span class="req">*</span></label><input class="form-input" id="nm-cod" placeholder="PET-03"></div>
+    <div class="form-group"><label class="form-label">Nombre <span class="req">*</span></label><input class="form-input" id="nm-nom" placeholder="Nombre del material"></div>
+    <div class="form-group"><label class="form-label">Precio ref. (S/./kg)</label><input type="number" class="form-input" id="nm-pre" value="0" step="0.01" min="0"></div>
+    <div class="form-group"><label class="form-label">Emoji</label><input class="form-input" id="nm-emo" value="♻️" maxlength="4"></div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="crearMaterial()">Crear</button></div>
+  `);
+}
+
+async function crearMaterial() {
+  const codigo=document.getElementById('nm-cod').value.trim();
+  const nombre=document.getElementById('nm-nom').value.trim();
+  if(!codigo||!nombre){showToast('error','Código y nombre son obligatorios');return;}
+  try {
+    await Api.crearMaterial({
+      codigo,nombre,emoji:document.getElementById('nm-emo').value||'♻️',
+      precio_referencial:parseFloat(document.getElementById('nm-pre').value)||0,
+    });
+    closeModal();
+    const matsData=await Api.materiales(false);
+    APP.materiales=matsData.map(m=>({id:m.id,codigo:m.codigo,nombre:m.nombre,categoria:m.categoria||'—',precio:m.precio_referencial||0,activo:m.estado==='activo',emoji:m.emoji||'♻️',stock_kg:m.stock_kg||0}));
+    renderMateriales();poblarSelects();
+    showToast('success','✅ Material creado');
+  } catch(e){showToast('error','❌ '+e.message);}
+}
+
+function openEditMaterial(id) {
+  const m=APP.materiales.find(x=>x.id===id);
+  if(!m)return;
+  openModal(`
+    <div class="modal-title">✏️ Editar Material: ${m.nombre}</div>
+    <div class="form-group"><label class="form-label">Precio ref. (S/./kg)</label><input type="number" class="form-input" id="em-pre" value="${m.precio}" step="0.01" min="0"></div>
+    <div class="form-group"><label class="form-label">Emoji</label><input class="form-input" id="em-emo" value="${m.emoji}" maxlength="4"></div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal()">Cancelar</button><button class="btn btn-amber" onclick="aplicarEditMaterial('${id}')">Guardar Cambios</button></div>
+  `);
+}
+
+async function aplicarEditMaterial(id) {
+  try {
+    await Api.actualizarMaterial(id,{
+      precio_referencial:parseFloat(document.getElementById('em-pre').value),
+      emoji:document.getElementById('em-emo').value,
+    });
+    const m=APP.materiales.find(x=>x.id===id);
+    if(m){m.precio=parseFloat(document.getElementById('em-pre').value);m.emoji=document.getElementById('em-emo').value;}
+    closeModal();renderMateriales();
+    showToast('success','Material actualizado.');
+  } catch(e){showToast('error','❌ '+e.message);}
+}
+
+async function toggleMaterial(id) {
+  try {
+    const res=await Api.toggleMaterial(id);
+    const m=APP.materiales.find(x=>x.id===id);
+    if(m){m.activo=res.estado==='activo';}
+    renderMateriales();poblarSelects();
+    showToast('success',`Material ${res.estado==='activo'?'activado':'desactivado'}.`);
+  } catch(e){showToast('error','❌ '+e.message);}
+}
+
+// ===== REPORTES =====
+async function generarReporte() {
+  if(APP.role!=='admin')return;
+  const mes=parseInt(document.getElementById('rep-mes').value);
+  const year=parseInt(document.getElementById('rep-year').value);
+  try {
+    const data=await Api.reporte(mes,year);
+    document.getElementById('rep-result').style.display='block';
+    const s=data.stats;
+    document.getElementById('rep-stats').innerHTML=`
+      <div class="stat-card"><div class="stat-label">TOTAL ENTRADAS</div><div class="stat-value text-green mono">${s.total_entradas_kg.toFixed(2)} kg</div></div>
+      <div class="stat-card"><div class="stat-label">TOTAL SALIDAS</div><div class="stat-value text-red mono">${s.total_salidas_kg.toFixed(2)} kg</div></div>
+      <div class="stat-card"><div class="stat-label">TRANSACCIONES</div><div class="stat-value mono">${s.total_transacciones}</div></div>
+      <div class="stat-card"><div class="stat-label">BALANCE NETO</div><div class="stat-value mono ${s.balance_kg>=0?'text-green':'text-red'}">${s.balance_kg.toFixed(2)} kg</div></div>`;
+    const altWarn=document.getElementById('rep-altered-warn');
+    altWarn.style.display=s.alterado?'flex':'none';
+    const txs=data.transacciones||[];
+    document.getElementById('rep-table').innerHTML=txs.length>0?txs.map(t=>`<tr>
+      <td class="mono">${new Date(t.registrado_en).toLocaleDateString('es-PE')}</td>
+      <td>${t.emoji||''} ${t.material}${t.modificado?' <span class="badge badge-amber">⚠ Modificado</span>':''}</td>
+      <td>${t.proveedor}</td>
+      <td class="mono ${t.tipo==='entrada'?'text-green':'text-red'}">${t.tipo==='entrada'?'+':'−'}${parseFloat(t.peso_kg).toFixed(2)}</td>
+      <td><span class="badge ${t.tipo==='entrada'?'badge-green':'badge-red'}">${t.tipo==='entrada'?'Entrada':'Salida'}</span></td>
+    </tr>`).join(''):'<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text3)">Sin transacciones en este período</td></tr>';
+  } catch(e){showToast('error','❌ '+e.message);}
+}
+
+function exportarReporte() {
+  const mes=parseInt(document.getElementById('rep-mes').value);
+  const year=parseInt(document.getElementById('rep-year').value);
+  window.location.href=Api.exportarCSV(mes,year);
+}
+
+// ===== AUDITORÍA =====
+async function cargarAuditoria() {
+  try {
+    const data=await Api.auditoria(100);
+    const list=document.getElementById('audit-list');
+    list.innerHTML=data.items.map(l=>`
+      <div class="audit-item">
+        <div class="audit-dot" style="background:var(--amber)"></div>
+        <div class="audit-content">
+          <div class="audit-title"><strong>${l.accion}</strong> — ${l.tabla_afectada||'—'}</div>
+          <div class="audit-meta">${l.descripcion||'—'}</div>
+          <div class="audit-meta">👤 ${l.usuario_email} · ${new Date(l.created_at).toLocaleString('es-PE',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</div>
+        </div>
+      </div>`).join('');
+    document.getElementById('audit-badge').textContent=data.total;
+    const summ=document.getElementById('audit-summary');
+    summ.innerHTML=`
+      <div class="stat-card"><div class="stat-label">TOTAL CAMBIOS</div><div class="stat-value text-amber">${data.total}</div></div>
+      <div class="stat-card"><div class="stat-label">HOY</div><div class="stat-value">${data.hoy}</div></div>
+      <div style="background:var(--amber-bg);border:1px solid var(--amber-border);border-radius:var(--r);padding:12px;">
+        <div style="font-size:12px;font-weight:600;color:var(--amber);margin-bottom:4px">RN-12 ACTIVO</div>
+        <div style="font-size:12px;color:var(--text2)">Todo cambio realizado queda registrado en este log inmutable.</div>
+      </div>`;
+  } catch(e){showToast('error','Error cargando auditoría: '+e.message);}
+}
+
+// ===== MODAL =====
+function openModal(html, onConfirm) {
+  let finalHTML=html;
+  if(onConfirm){
+    finalHTML+=`<div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal()">Cancelar</button><button id="modal-confirm-btn" class="btn btn-amber">Confirmar de todos modos</button></div>`;
+  }
+  document.getElementById('modal-content').innerHTML=finalHTML;
+  document.getElementById('modal-overlay').classList.add('open');
+  if(onConfirm){
+    const btn=document.getElementById('modal-confirm-btn');
+    if(btn) btn.onclick=onConfirm;
+  }
+}
+function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
+document.getElementById('modal-overlay').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
+
+// ===== TOAST =====
+function showToast(type,msg) {
+  const c=document.getElementById('toast-container');
+  const t=document.createElement('div');
+  t.className=`toast toast-${type}`;
+  t.textContent=msg;
+  c.appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(20px)';t.style.transition='.3s';setTimeout(()=>t.remove(),350);},4000);
+}
+
+// Init timestamp
+setInterval(()=>{
+  const el=document.getElementById('pesaje-timestamp');
+  if(el) el.textContent=new Date().toLocaleString('es-PE',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+},1000);
+
+// Check sesión existente al cargar
+window.addEventListener('DOMContentLoaded', async () => {
+  const token=Api.getToken();
+  const user=Api.getUser();
+  if(token&&user){
+    try {
+      await Api.me(); // valida que el token sigue activo
+      APP.user=user.email;
+      APP.role=user.rol;
+      document.getElementById('login-screen').style.display='none';
+      document.getElementById('main-topbar').style.display='flex';
+      document.getElementById('main-layout').style.display='flex';
+      document.getElementById('user-name-disp').textContent=user.nombre+' '+user.apellido;
+      const roleEl=document.getElementById('user-role-disp');
+      roleEl.textContent=user.rol==='admin'?'Admin':'Operario';
+      roleEl.className='user-role-pill '+(user.rol==='admin'?'role-admin':'role-operario');
+      document.querySelectorAll('.admin-only').forEach(el=>{el.style.display=user.rol==='admin'?'flex':'none';});
+      if(user.rol!=='admin'){const lock=document.getElementById('admin-lock');if(lock)lock.style.display='flex';}
+      await cargarDatosIniciales();
+      nav('dashboard');
+    } catch { Api.clearToken(); }
+  }
+});
+</script>
+</body>
+</html>
