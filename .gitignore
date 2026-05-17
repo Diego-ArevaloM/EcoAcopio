@@ -1,2 +1,11 @@
-.env
+/backend/.env
 schema.sql
+
+frontend/node_modules/
+
+backend/venv/
+
+backend/__pycache__/
+
+backend/core/__pycache__
+backend/routers/__pycache__

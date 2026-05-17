@@ -34,10 +34,32 @@ ecoacopio/
 │       ├── auditoria.py        ← Log inmutable (RN-12)
 │       └── scanner.py          ← Proxy seguro a Anthropic IA
 │
-└── frontend/
-    ├── index.html              ← App completa (conectada al backend)
-    └── static/
-        └── api.js              ← Cliente HTTP para el backend
+└── frontend/                   ← Interfaz de Usuario (SPA)
+    ├── src/
+    │   ├── components/         ← Componentes UI reutilizables
+    │   │   └── Modal.jsx
+    │   ├── hooks/              ← Custom hooks de estado y lógica
+    │   │   ├── useClock.jsx
+    │   │   └── useToast.jsx
+    │   ├── pages/              ← Vistas/Pantallas del sistema
+    │   │   ├── Auditoria.jsx
+    │   │   ├── Dashboard.jsx
+    │   │   ├── Inventario.jsx
+    │   │   ├── Login.jsx
+    │   │   ├── Materiales.jsx
+    │   │   ├── Pesaje.jsx
+    │   │   ├── Proveedores.jsx
+    │   │   ├── Reportes.jsx
+    │   │   └── Scanner.jsx
+    │   ├── services/           ← Lógica de conexión HTTP con el backend
+    │   │   └── api.js
+    │   ├── App.jsx             ← Enrutador principal y estructura base (Layout)
+    │   ├── index.css           ← Hoja de estilos globales (Diseño UI)
+    │   └── main.jsx            ← Punto de montaje de React
+    │
+    ├── index.html              ← Punto de entrada HTML
+    ├── package.json            ← Dependencias y scripts de Node.js
+    └── vite.config.js          ← Configuración del empaquetador Vite
 ```
 
 ---
@@ -115,42 +137,14 @@ Documentación automática de la API: `http://localhost:8000/docs`
 
 ## Paso 4 — Servir el Frontend
 
-El backend ya sirve el frontend automáticamente. Solo necesitas que `frontend/` esté en la carpeta correcta.
+cd frontend
 
-**Opción A — Integrado (recomendado para producción):**
+# 1. Instalar dependencias de Node
+npm install
 
-El `main.py` está configurado para servir `../frontend/index.html` como raíz (`/`).
-Asegúrate de que la estructura de carpetas sea:
+# 2. Levantar el servidor de desarrollo Frontend
+npm run dev
 
-```
-proyecto/
-├── backend/        ← uvicorn corre aquí
-└── frontend/       ← index.html va aquí
-    ├── index.html
-    └── static/
-        └── api.js
-```
-
-Luego accede a: `http://localhost:8000`
-
-**Opción B — Desarrollo (frontend separado):**
-
-Abre `frontend/index.html` directamente en el navegador, pero debes configurar
-la URL del backend editando `api.js`:
-
-```js
-// Al inicio de api.js, cambia:
-const BASE_URL = window.ECOACOPIO_API_URL || '';
-// Por:
-const BASE_URL = 'http://localhost:8000';
-```
-
-O bien, agrega esto en el `<head>` del `index.html` antes del `<script src="/static/api.js">`:
-```html
-<script>window.ECOACOPIO_API_URL = 'http://localhost:8000';</script>
-```
-
----
 
 ## Despliegue en Producción
 
