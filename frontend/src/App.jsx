@@ -1,19 +1,19 @@
 import { useState, useEffect } from "react";
-import "./index.css"; 
+import "./index.css";
 
 import { Api } from "./services/api";
 import { useToast, ToastContainer } from "./hooks/useToast";
 import { useClock } from "./hooks/useClock";
 
-import LoginPage from "./pages/Login";
-import DashboardPage from "./pages/Dashboard";
-import PesajePage from "./pages/Pesaje";
-import InventarioPage from "./pages/Inventario";
-import ScannerPage from "./pages/Scanner";
-import ProveedoresPage from "./pages/Proveedores";
-import ReportesPage from "./pages/Reportes";
-import MaterialesPage from "./pages/Materiales";
-import AuditoriaPage from "./pages/Auditoria";
+import LoginPage from "./pages/login";
+import DashboardPage from "./pages/dashboard";
+import PesajePage from "./pages/pesaje";
+import InventarioPage from "./pages/inventario";
+import ScannerPage from "./pages/scanner";
+import ProveedoresPage from "./pages/proveedores";
+import ReportesPage from "./pages/reportes";
+import MaterialesPage from "./pages/materiales";
+import AuditoriaPage from "./pages/auditoria";
 
 export default function App() {
   const [user, setUser] = useState(null);
