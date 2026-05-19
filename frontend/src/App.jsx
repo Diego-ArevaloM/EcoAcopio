@@ -15,7 +15,7 @@ import ReportesPage from "./pages/reportes";
 import MaterialesPage from "./pages/materiales";
 import AuditoriaPage from "./pages/auditoria";
 
-export default function app() {
+export default function App() {
   const [user, setUser] = useState(null);
   const [role, setRole] = useState(null);
   const [page, setPage] = useState("dashboard");
