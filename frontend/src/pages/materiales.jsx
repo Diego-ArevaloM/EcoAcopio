@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Api } from "../services/api";
-import Modal from "../components/modal";
+import Modal from "../components/Modal";
 
 export default function MaterialesPage({ app, onRefresh, showToast }) {
   const [modal, setModal] = useState(null);
